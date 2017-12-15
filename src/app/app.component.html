@@ -12,6 +12,13 @@
                 </div>
                 <button class="btn btn-xs btn-default" (click)="addPath(path_codes)">Add Path</button>
             </form>
+            <form>
+                <div class="form-group">
+                    <label>Calculate total cost of route</label>
+                    <input type="text" class="form-control" name="route" [(ngModel)]="route" placeholder="Type route here...(Ex. A-B-C)">
+                </div>
+                <button class="btn btn-xs btn-default" (click)="findCost(route)">Calculate</button> {{total_cost?"Total Cost : "+ total_cost:""}}
+            </form>
         </div>
     </div>
 </div>

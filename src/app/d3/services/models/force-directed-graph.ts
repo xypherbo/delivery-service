@@ -4,10 +4,10 @@ import { Node } from './node';
 import * as d3 from 'd3';
 
 const FORCES = {
-  LINKS: 1 / 50,
+  LINKS: 1 / 60,
   COLLISION: 1,
-  CHARGE: -1
-}
+  CHARGE: 0
+};
 
 export class ForceDirectedGraph {
   public ticker: EventEmitter<d3.Simulation<Node, Link>> = new EventEmitter();
@@ -23,14 +23,14 @@ export class ForceDirectedGraph {
     this.initSimulation(options);
   }
 
-  connectNodes(source, target) {
+  connectNodes(source, target, cost) {
     let link;
 
     if (!this.nodes[source] || !this.nodes[target]) {
       throw new Error('One of the nodes does not exist');
     }
 
-    link = new Link(source, target);
+    link = new Link(source, target, cost);
     this.simulation.stop();
     this.links.push(link);
     this.simulation.alphaTarget(0.3).restart();
@@ -59,6 +59,8 @@ export class ForceDirectedGraph {
   }
 
   initSimulation(options) {
+    console.log('_initSimulation');
+    console.log(this.nodes);
     if (!options || !options.width || !options.height) {
       throw new Error('missing options when initializing simulation');
     }
@@ -69,13 +71,13 @@ export class ForceDirectedGraph {
 
       this.simulation = d3.forceSimulation()
         .force('charge',
-          d3.forceManyBody()
-            .strength(d => FORCES.CHARGE * d['r'])
+        d3.forceManyBody()
+          .strength(d => FORCES.CHARGE * d['r'])
         )
         .force('collide',
-          d3.forceCollide()
-            .strength(FORCES.COLLISION)
-            .radius(d => d['r'] + 5).iterations(2)
+        d3.forceCollide()
+          .strength(FORCES.COLLISION)
+          .radius(d => d['r'] + 5).iterations(2)
         );
 
       // Connecting the d3 ticker to an angular event emitter

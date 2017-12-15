@@ -19,10 +19,10 @@ export class D3Service {
 
     zoomed = () => {
       const transform = d3.event.transform;
-      container.attr("transform", "translate(" + transform.x + "," + transform.y + ") scale(" + transform.k + ")");
+      container.attr('transform', 'translate(' + transform.x + ',' + transform.y + ') scale(' + transform.k + ')');
     }
 
-    zoom = d3.zoom().on("zoom", zoomed);
+    zoom = d3.zoom().on('zoom', zoomed);
     svg.call(zoom);
   }
 
@@ -38,7 +38,7 @@ export class D3Service {
         graph.simulation.alphaTarget(0.3).restart();
       }
 
-      d3.event.on("drag", dragged).on("end", ended);
+      d3.event.on('drag', dragged).on('end', ended);
 
       function dragged() {
         node.fx = d3.event.x;
@@ -56,13 +56,14 @@ export class D3Service {
     }
 
     d3element.call(d3.drag()
-      .on("start", started));
+      .on('start', started));
   }
 
   /** The interactable graph we will simulate in this article
   * This method does not interact with the document, purely physical calculations with d3
   */
   getForceDirectedGraph(nodes: Node[], links: Link[], options: { width, height }) {
+    console.log("getForceDirectedGraph");
     const sg = new ForceDirectedGraph(nodes, links, options);
     return sg;
   }

@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 
 
 import { D3Service, D3_DIRECTIVES } from './d3';
+import { PathfinderService } from './delivery/services';
 import { GraphComponent } from './d3/components/graph/graph.component';
 import { SHARED_VISUALS } from './d3/components/shared';
 
@@ -20,7 +21,7 @@ import { SHARED_VISUALS } from './d3/components/shared';
     BrowserModule,
     FormsModule
   ],
-  providers: [D3Service],
+  providers: [D3Service,PathfinderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

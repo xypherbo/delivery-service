@@ -11,10 +11,12 @@ export class Node implements d3.SimulationNodeDatum {
   fy?: number | null;
 
   id: string;
-  linkCount: number = 0;
+  label: string;
+  linkCount = 0;
 
-  constructor(id) {
+  constructor(id, label) {
     this.id = id;
+    this.label = label;
   }
 
   normal = () => {
@@ -30,7 +32,7 @@ export class Node implements d3.SimulationNodeDatum {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.SPECTRUM.length * this.normal());
+    const index = Math.floor(APP_CONFIG.SPECTRUM.length * this.normal());
     return APP_CONFIG.SPECTRUM[index];
   }
 }

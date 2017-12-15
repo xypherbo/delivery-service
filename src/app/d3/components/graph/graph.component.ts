@@ -1,7 +1,4 @@
-import {
-    Component, ChangeDetectorRef,
-    ChangeDetectionStrategy, Input
-} from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, Input } from '@angular/core';
 import { D3Service, ForceDirectedGraph, Node } from '../../';
 
 @Component({
@@ -35,6 +32,14 @@ export class GraphComponent {
 
     ngAfterViewInit() {
         this.graph.initSimulation(this.options);
+    }
+
+    ngOnChanges(){
+        console.log('change');
+        this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, this.options);
+        this.graph.ticker.subscribe((d) => {
+            this.ref.markForCheck();
+        });
     }
 
     private _options: { width, height } = { width: 500, height: 300 };
