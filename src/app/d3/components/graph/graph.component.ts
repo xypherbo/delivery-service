@@ -8,10 +8,10 @@ import { D3Service, ForceDirectedGraph, Node } from '../../';
     selector: 'graph',
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-    <svg #svg [attr.width]="_options.width" [attr.height]="_options.height" style="border:1px solid black">
-      <g>
+    <svg #svg [attr.width]="_options.width" [attr.height]="_options.height" class="graph">
+      <g [zoomableOf]="svg">
         <g [linkVisual]="link" *ngFor="let link of links"></g>
-        <g [nodeVisual]="node" *ngFor="let node of nodes"></g>
+        <g [nodeVisual]="node" *ngFor="let node of nodes" [draggableNode]="node" [draggableInGraph]="graph"></g>
       </g>
     </svg>
   `,

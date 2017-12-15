@@ -1,2 +1,17 @@
-
-<graph [nodes]="nodes" [links]="links"></graph>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+            <p>Map</p>
+            <graph [nodes]="nodes" [links]="links"></graph>
+        </div>
+        <div class="col mt-5">
+            <form>
+                <div class="form-group">
+                    <label>Path</label>
+                    <textarea type="text" class="form-control" name="path_codes" [(ngModel)]="path_codes" placeholder="Type path here..."></textarea>
+                </div>
+                <button class="btn btn-xs btn-default" (click)="addPath(path_codes)">Add Path</button>
+            </form>
+        </div>
+    </div>
+</div>
