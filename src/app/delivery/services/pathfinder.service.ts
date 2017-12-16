@@ -3,9 +3,7 @@ import { Node, Link } from '../../d3';
 @Injectable()
 export class PathfinderService {
 
-    path: Array<string> = [];
     cost: number;
-    visited_node: Array<string> = [];
     constructor() { }
 
     findCost(routes, links) {
@@ -66,33 +64,33 @@ export class PathfinderService {
         }
     }
 
-
     findAllPath(from, to, stop, nodes: Node[], links: Link[]) {
         const graph = this.createGraph(links);
-
-        this.traverseNode(from, to, graph, true);
+        this.traverseNode(from, to, graph, [], [], true);
     }
 
-    traverseNode(from, to, graph, start) {
+    traverseNode(from, to, graph, visited_node, path, start) {
         // console.log('AT:' + from);
+        // console.log(visited_node);
         if (from === to && start !== true) {
-            this.path.push(from);
-            console.log(this.path.join(' '));
-        } else if (this.visited_node.indexOf(from) !== -1) {
+            path.push(from);
+            console.log(path.join(' '));
+        } else if (visited_node.indexOf(from) !== -1) {
             return;
         } else {
-            this.path.push(from);
-            this.visited_node.push(from);
+            path.push(from);
+            visited_node.push(from);
             const adj = graph[from];
-            console.log(adj);
+            // console.log(adj);
             for (const key in adj) {
                 this.cost += adj[key];
                 // console.log('TRAVERSE :' + key);
-                this.traverseNode(key, to, graph, false);
+                this.traverseNode(key, to, graph, visited_node, path, false);
             }
         }
 
-        this.path.pop();
+        path.pop();
+        visited_node.pop();
     }
 
     createGraph(links: Link[]) {
