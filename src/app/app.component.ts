@@ -8,19 +8,23 @@ import { PathfinderService } from './delivery/services';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+    path_input: string;
+    total_cost: string | number;
+    shortest: any;
+    from: string;
+    to: string;
     nodes: Node[] = [];
     uncalc_nodes: Node[] = [];
     links: Link[] = [];
     uncalc_links: Link[] = [];
-    path_input: string;
-    total_cost: string | number;
 
     constructor(private pathfinderService: PathfinderService) {
 
     }
 
     addPath(path_codes) {
-        const path_code_array = path_codes.split(',');
+        const path_code_array = path_codes.split(', ');
         path_code_array.forEach(path_code => {
             const src_town = path_code.substring(0, 1);
             const dest_town = path_code.substring(1, 2);
@@ -45,6 +49,11 @@ export class AppComponent {
 
     findCost(route) {
         this.total_cost = this.pathfinderService.findCost(route, this.uncalc_links);
+    }
+
+    findShortest(from, to) {
+        this.shortest = this.pathfinderService.findShortest(from, to, this.uncalc_nodes, this.uncalc_links);
+        this.pathfinderService.findAllPath(from, to, 4, this.uncalc_nodes, this.uncalc_links);
     }
 
     findNodeIndex(node_id: any): number {

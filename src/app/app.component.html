@@ -7,17 +7,31 @@
         <div class="col mt-5">
             <form>
                 <div class="form-group">
-                    <label>Path</label>
+                    <label>Path AB1, AC4, AD10, BE3, CD4, CF2, DE1, EB3, EA2, FD1</label>
                     <textarea type="text" class="form-control" name="path_codes" [(ngModel)]="path_codes" placeholder="Type path here..."></textarea>
                 </div>
                 <button class="btn btn-xs btn-default" (click)="addPath(path_codes)">Add Path</button>
             </form>
-            <form>
+            <form class="mt-4">
                 <div class="form-group">
                     <label>Calculate total cost of route</label>
                     <input type="text" class="form-control" name="route" [(ngModel)]="route" placeholder="Type route here...(Ex. A-B-C)">
                 </div>
                 <button class="btn btn-xs btn-default" (click)="findCost(route)">Calculate</button> {{total_cost?"Total Cost : "+ total_cost:""}}
+            </form>
+            <form class="mt-4">
+                <div class="form-group">
+                    <label>Find shortest route</label>
+                    from
+                    <select name="from" [(ngModel)]="from">
+                        <option *ngFor="let node of nodes" [value]="node.label">{{node.label}}</option>
+                    </select>
+                    to
+                    <select name="to" [(ngModel)]="to">
+                        <option *ngFor="let node of nodes" [value]="node.label">{{node.label}}</option>
+                    </select>
+                </div>
+                <button class="btn btn-xs btn-default" (click)="findShortest(from,to)">Find</button> {{shortest?"Cost : "+ shortest.cost:""}}
             </form>
         </div>
     </div>
