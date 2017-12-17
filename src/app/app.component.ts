@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Node, Link } from './d3';
-import { PathfinderService } from './delivery/services';
+import { Route, PathfinderService } from './delivery/services';
 
 @Component({
     selector: 'app-root',
@@ -18,6 +18,9 @@ export class AppComponent {
     uncalc_nodes: Node[] = [];
     links: Link[] = [];
     uncalc_links: Link[] = [];
+    all_route: Array<Route> = [];
+    can_repeat: boolean;
+    cost_limit: number;
 
     constructor(private pathfinderService: PathfinderService) {
 
@@ -53,7 +56,7 @@ export class AppComponent {
 
     findShortest(from, to) {
         this.shortest = this.pathfinderService.findShortest(from, to, this.uncalc_nodes, this.uncalc_links);
-        this.pathfinderService.findAllPath(from, to, 4, this.uncalc_nodes, this.uncalc_links);
+        this.all_route = this.pathfinderService.findAllPath(from, to, 4, this.uncalc_nodes, this.uncalc_links, this.can_repeat, this.cost_limit);
     }
 
     findNodeIndex(node_id: any): number {

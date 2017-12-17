@@ -31,7 +31,15 @@
                         <option *ngFor="let node of nodes" [value]="node.label">{{node.label}}</option>
                     </select>
                 </div>
-                <button class="btn btn-xs btn-default" (click)="findShortest(from,to)">Find</button> {{shortest?"Cost : "+ shortest.cost:""}}
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="can_repeat" [(ngModel)]="can_repeat">can use repeat delivery route
+                        <br>  <input type="text" class="form-control" name="cost_limit" *ngIf="can_repeat" [(ngModel)]="cost_limit" placeholder="cost limit">
+                    </label>
+                </div>
+                <button class="btn btn-xs btn-default" (click)="findShortest(from,to)">Find</button>
+                <p class="mt-4">{{shortest?"Least cost : "+ shortest.cost + " from " +all_route.length + " routes":""}}</p>
+                <p *ngFor="let route of all_route">Route : {{route.path}} (cost:{{route.cost}})</p>
             </form>
         </div>
     </div>
