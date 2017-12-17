@@ -55,8 +55,10 @@ export class AppComponent {
     }
 
     findShortest(from, to) {
-        this.shortest = this.pathfinderService.findShortest(from, to, this.uncalc_nodes, this.uncalc_links);
-        this.all_route = this.pathfinderService.findAllPath(from, to, 4, this.uncalc_nodes, this.uncalc_links, this.can_repeat, this.cost_limit);
+        const graph = this.pathfinderService.createGraph(this.uncalc_links);
+        console.log(JSON.stringify(graph));
+        this.shortest = this.pathfinderService.findShortest(from, to, graph);
+        this.all_route = this.pathfinderService.findAllPath(from, to, 4, graph, this.can_repeat, this.cost_limit);
     }
 
     findNodeIndex(node_id: any): number {

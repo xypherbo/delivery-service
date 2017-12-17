@@ -9,7 +9,6 @@ export interface Route {
 @Injectable()
 export class PathfinderService {
 
-    all_route: Array<Route>;
     constructor() { }
 
     findCost(routes, links) {
@@ -28,59 +27,67 @@ export class PathfinderService {
         return total_cost;
     }
 
-    findShortest(from, to, nodes: Node[], links: Link[]) {
-        const graph = this.createGraph(links);
-        const cost = {};
-        const prev = {};
-        let unvisited_node = nodes.map(node => node.label);
+    findShortest(from, to, graph) {
+        if (from && to) {
+            const cost = {};
+            const prev = {};
+            let unvisited_node = Object.keys(graph);
 
-        nodes.forEach(node => {
-            cost[node.label] = Number.POSITIVE_INFINITY;
-            prev[node.label] = undefined;
-        });
+            unvisited_node.forEach(node => {
+                cost[node] = Number.POSITIVE_INFINITY;
+                prev[node] = undefined;
+            });
 
-        cost[from] = 0;
-        while (unvisited_node.length > 0) {
-            const next_node_to_investigate = this.getLeastDistanceNode(unvisited_node, cost);
-            unvisited_node = this.removeVisitedNode(next_node_to_investigate, unvisited_node);
-            const neighbor = graph[next_node_to_investigate];
-            if (cost[from] !== 0 && next_node_to_investigate === to) {
-                // stop finding if at destination node
-                return {
-                    cost: cost[to]
-                };
-            } else {
-                for (const key in neighbor) {
-                    if (neighbor.hasOwnProperty(key)) {
-                        const neighbor_cost = neighbor[key];
-                        const temp = cost[next_node_to_investigate] + neighbor_cost;
-                        if (temp < cost[key]) {
-                            cost[key] = temp;
-                            prev[key] = next_node_to_investigate;
+            cost[from] = 0;
+            while (unvisited_node.length > 0) {
+                const next_node_to_investigate = this.getLeastDistanceNode(unvisited_node, cost);
+                unvisited_node = this.removeVisitedNode(next_node_to_investigate, unvisited_node);
+                const neighbor = graph[next_node_to_investigate];
+                if (cost[from] !== 0 && next_node_to_investigate === to) {
+                    // stop finding if at destination node
+                    return {
+                        cost: cost[to]
+                    };
+                } else {
+                    for (const key in neighbor) {
+                        if (neighbor.hasOwnProperty(key)) {
+                            const neighbor_cost = neighbor[key];
+                            const temp = cost[next_node_to_investigate] + neighbor_cost;
+                            if (temp < cost[key]) {
+                                cost[key] = temp;
+                                prev[key] = next_node_to_investigate;
+                            }
                         }
                     }
-                }
-                if (cost[from] === 0) {
-                    cost[from] = Number.POSITIVE_INFINITY;
-                    unvisited_node.push(from);
+                    if (cost[from] === 0) {
+                        cost[from] = Number.POSITIVE_INFINITY;
+                        unvisited_node.push(from);
+                    }
                 }
             }
+        } else {
+            return;
         }
     }
 
-    findAllPath(from, to, stop, nodes: Node[], links: Link[], can_repeat: Boolean, cost_limit: number) {
-        const graph = this.createGraph(links);
-        this.all_route = [];
-        this.traverseNode(from, to, graph, [], [], 0, true, can_repeat, cost_limit);
-        return this.all_route;
+    findAllPath(from, to, stop, graph, can_repeat: Boolean, cost_limit: number) {
+        if (!from || !to) {
+            return;
+        }
+        if (can_repeat && !cost_limit) {
+            return;
+        }
+        const all_route = [];
+        this.traverseNode(from, to, graph, [], [], all_route, 0, true, can_repeat, cost_limit);
+        return all_route;
     }
 
-    traverseNode(from, to, graph, visited_node, path, cost, start, can_repeat, cost_limit) {
+    traverseNode(from, to, graph, visited_node, path, all_route, cost, start, can_repeat, cost_limit) {
 
         // at destination and not have repeat option
         if (from === to && start !== true && !can_repeat) {
             path.push({ from, cost });
-            this.addRoute(path);
+            this.addRoute(path, all_route);
         } else if (visited_node.indexOf(from) !== -1) {
             // at visited node
             return;
@@ -96,7 +103,7 @@ export class PathfinderService {
                     if (total_cost !== 0) {
                         // if current node is at destination node
                         if (path[path.length - 1].from === to) {
-                            this.addRoute(path);
+                            this.addRoute(path, all_route);
                         }
                     }
                 }
@@ -109,7 +116,7 @@ export class PathfinderService {
 
             const adj = graph[from];
             for (const key in adj) {
-                this.traverseNode(key, to, graph, visited_node, path, adj[key], false, can_repeat, cost_limit);
+                this.traverseNode(key, to, graph, visited_node, path, all_route, adj[key], false, can_repeat, cost_limit);
             }
         }
 
@@ -118,7 +125,7 @@ export class PathfinderService {
 
     }
 
-    addRoute(path) {
+    addRoute(path, all_route) {
 
         const print_path = [];
         let print_cost = 0;
@@ -127,12 +134,12 @@ export class PathfinderService {
             print_cost += element.cost;
         });
 
-        const dupplicate = this.all_route.filter(route => {
+        const dupplicate = all_route.filter(route => {
             return route.path === print_path.join(' ');
         });
 
         if (dupplicate.length === 0) {
-            this.all_route.push({
+            all_route.push({
                 path: print_path.join(' '),
                 cost: print_cost
             });
