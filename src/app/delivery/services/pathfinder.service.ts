@@ -17,12 +17,17 @@ export class PathfinderService {
         for (let index = 0; index < route.length - 1; index++) {
             const src_town = route[index];
             const dest_town = route[index + 1];
-            const travel_cost = this.checkLink(src_town, dest_town, links);
-            if (travel_cost > 0) {
-                total_cost += travel_cost;
-            } else {
+            if(src_town != "" && dest_town !=  ""){
+                const travel_cost = this.checkLink(src_town, dest_town, links);
+                if (travel_cost > 0) {
+                    total_cost += travel_cost;
+                } else {
+                    return 'No Such Route';
+                }
+            }else{
                 return 'No Such Route';
             }
+           
         }
         return total_cost;
     }

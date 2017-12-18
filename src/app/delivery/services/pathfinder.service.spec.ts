@@ -12,12 +12,45 @@ describe('PathfinderService', () => {
         'F': { 'D': 1 }
     };
 
+    const links:any = [{
+        source:{
+            label:"A"
+        },
+        target:{
+            label:"B"
+        },
+        cost:5
+    },{
+        source:{
+            label:"B"
+        },
+        target:{
+            label:"C"
+        },
+        cost:2
+    },{
+        source:{
+            label:"C"
+        },
+        target:{
+            label:"D"
+        },
+        cost:3
+    }]
+
     beforeEach(() => {
         service = new PathfinderService();
     });
 
-    it('#findCost should reject if input invalid', () => {
+    it('#findCost should be function', () => {
+        expect(service.findCost("A-B",links)).toBe(5);
+        expect(service.findCost("A-B-C-D",links)).toBe(10);
+    });
 
+    it('#findCost should return No Such Route if no route', () => {
+        expect(service.findCost("A-",links)).toBe('No Such Route');
+        expect(service.findCost("A---------*",links)).toBe('No Such Route');
+        expect(service.findCost("A-X",links)).toBe('No Such Route');
     });
 
     it('#findShortest without source or destination should do nothing', () => {
@@ -57,4 +90,5 @@ describe('PathfinderService', () => {
     it('#findAllPath E-E with repeat route and cost not over 20 shoule be 29 route', () => {
         expect(service.findAllPath('E', 'E', 4, graph, true, 20).length).toEqual(29);
     });
+
 });
